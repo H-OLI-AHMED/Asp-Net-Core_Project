@@ -1,0 +1,303 @@
+﻿@model Core_Project.Models.IDB_STUDENTS_VM
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<h4>IDB_STUDENTS_VM</h4>
+<partial name="_PartialName" />
+<hr />
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <form asp-action="Index" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="STUDENT_ID" class="control-label"></label>
+                            <input asp-for="STUDENT_ID" class="form-control" value="@ViewBag.Parentid" />
+                            <span asp-validation-for="STUDENT_ID" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="BATCH_ID" class="control-label"></label>
+                            <input asp-for="BATCH_ID" class="form-control" />
+                            <span asp-validation-for="BATCH_ID" class="text-danger"></span>
+                        </div>
+
+                        
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+                            <label asp-for="SL_NO" class="control-label"></label>
+                            <input asp-for="SL_NO" class="form-control" />
+                            <span asp-validation-for="SL_NO" class="text-danger" id="slerror"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="NAME" class="control-label"></label>
+                            <input asp-for="NAME" class="form-control" />
+                            <span asp-validation-for="NAME" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="SUB_ID" class="control-label"></label>
+
+                            <select name="SUB_ID" id="SUB_ID" class="form-control" asp-items="@ViewBag.idb_course"></select>
+
+                            <span asp-validation-for="SUB_ID" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="IDB_SUBJECT" class="control-label"></label>
+                            <input asp-for="IDB_SUBJECT" class="form-control" />
+                            <span asp-validation-for="IDB_SUBJECT" class="text-danger"></span>
+                        </div>
+
+
+                        <div class="form-group form-check">
+                            <label class="form-check-label">
+                                <input class="form-check-input" asp-for="ACTIVE" /> @Html.DisplayNameFor(model => model.ACTIVE)
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="CORE_DATE" class="control-label"></label>
+                            <input asp-for="CORE_DATE" class="form-control" />
+                            <span asp-validation-for="CORE_DATE" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PICTURE" class="control-label"></label>
+                            <input type="file" class="form-control" name="PICTURE" id="PICTURE" />
+                        </div>
+                        <div class="form-group">
+                            <input type="button" id="add" value="Add" class="btn btn-primary" />
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<h2 style="color:orange">@ViewBag.DeptError</h2>
+<div class="form-group">
+    <div class="col-md-offset-2 col-md-10">
+        <button type='button' id="save" class="btn btn-lg btn-default btn-primary">Save</button>
+        <button type='button' id="deleteall" class="btn btn-lg btn-default btn-primary">Remove</button>
+    </div>
+</div>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+<script>
+    $(document).ready(function () {
+         var act = [];
+        var index = -1;
+
+        $("#SUB_ID").change(function () {
+
+            $.ajax('/IDB_STUDENTS/getitem2/' + $("#SUB_ID").val(),
+                {
+                    data: {},
+                    dataType: 'json',
+                    method: 'get',
+                    timeout: 500,
+                    success: function (data, status, xhr) {
+                        $('#IDB_SUBJECT').val(data.IDB_SUBJECT);
+
+                    }
+
+                });
+        });
+
+        $("#SL_NO").keyup(function () {
+            $.ajax('/IDB_STUDENTS/Core_Students_Exists?id=' + $("#SL_NO").val(),
+                {
+                    data: {},
+                    dataType: 'json',
+                    method: 'get',
+                    timeout: 500,
+                    success: function (data, status, xhr) {
+                        if (data == "1") {
+                            $("#slerror").html("Exists");
+                        }
+                        else {
+                            $("#slerror").html("");
+                        }
+                    }
+                });
+        });
+
+        $("#STUDENT_ID").keyup(function () {
+            getAjax('/IDB_STUDENTS/GetCF/' + $("#STUDENT_ID").val(), function (r) {
+                if (r != "") {
+                    $("#BATCH_ID").val(r[0].BATCH_ID);
+                }
+                else {
+                    $("#BATCH_ID").val("");
+                }
+                showItems();
+            });
+
+        });
+        function showItems() {
+            getAjax('/IDB_STUDENTS/GetCORE_STUDENTS/' + $("#STUDENT_ID").val(), function (data) {
+                act = data;
+                CORE_STUDENTS();
+            });
+
+        }
+        function CORE_STUDENTS() {
+            var j = 0;
+
+            var a = "<table class='table'><tr><th>SL_NO</th><th>NAME</th><th>SUB_ID</th><th>IDB_SUBJECT</th><th>ACTIVE</th><th>CORE_DATE</th><th>PICTURE</th><th></th></tr>";
+            for (d in act) {
+                today = ConvertDate(act[d].CORE_DATE);
+                a += `<tr><td>${act[d].SL_NO}</td><td>${act[d].NAME}</td><td>${act[d].SUB_ID}</td><td>${act[d].IDB_SUBJECT}</td><td>${act[d].ACTIVE}</td><td>${today}</td><td><img src='/uploads/${act[d].PICTURE}' width='100'/></td><td><button type='button' onclick="edit1('${act[d].SL_NO}','${act[d].SUB_ID}','${act[d].IDB_SUBJECT}','${act[d].NAME}','${act[d].ACTIVE}','${today}','${act[d].PICTURE}',${j})">Edit</button><button type='button' onclick="remove(${j})">Remove</button></td></tr>`;
+                j++;
+            }
+            a += "</table>";
+            $("#CORE_STUDENTS").html(a);
+        }
+
+        $("#add").click(function () {
+            var dt = $("#CORE_DATE").val();
+
+
+            var files = $("#PICTURE").get(0).files;
+            var fname = files[0].name
+            var fileData = new FormData();
+            fileData.append(files[0].name, files[0]);
+            $.ajax({
+                url: '/IDB_STUDENTS/UploadFiles',
+                type: "POST",
+                contentType: false,
+                processData: false,
+                data: fileData,
+                success: function (result) {
+                    if ($("#Active").val() == "True")
+                    a = true;
+                    else
+                    a = false;
+                    if ($("#add").val() == "Add") {
+                        act.push({ "SL_NO": $("#SL_NO").val(), "NAME": $("#NAME").val(), "BATCH_ID": $("#BATCH_ID").val(), "SUB_ID": $("#SUB_ID").val(), "IDB_SUBJECT": $("#IDB_SUBJECT").val(), "ACTIVE": a, "CORE_DATE": dt, "PICTURE": fname, });
+                        CORE_STUDENTS();
+                    }
+                    else {
+
+                        v = { "SL_NO": $("#SL_NO").val(), "NAME": $("#NAME").val(), "BATCH_ID": $("#BATCH_ID").val(), "SUB_ID": $("#SUB_ID").val(), "IDB_SUBJECT": $("#IDB_SUBJECT").val(), "ACTIVE":a, "CORE_DATE": dt, "PICTURE": $("#PICTURE").val().split('\\').pop() };
+                        act[index] = v;
+                        CORE_STUDENTS();
+                        $("#add").val("Add");
+                    }
+                },
+            });
+
+        });
+        $("#Image").change(function () {
+            previewFile(this)
+        });
+        function previewFile(input) {
+            var file = $("input[type=file]").get(0).files[0];
+
+            if (file) {
+                var reader = new FileReader();
+
+                reader.onload = function () {
+                    $("#Image1").attr("src", reader.result);
+                }
+
+                reader.readAsDataURL(file);
+            }
+        }
+        $("#save").click(function () {
+            fname = "";
+
+            
+            getAjax('/IDB_STUDENTS/DeleteAll/' + $("#STUDENT_ID").val(), function (d) {
+                //alert("DELETED")
+                
+                var data1 = {
+                    STUDENT_ID: $("#STUDENT_ID").val(),
+                    BATCH_ID: $("#BATCH_ID").val(),
+                    CORE_STUDENTS: act
+                };
+                console.log('/IDB_STUDENTS/AddMasterDetails');
+                console.log(JSON.stringify(data1));
+                $.ajax({
+                    url: '/IDB_STUDENTS/AddMasterDetails',
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    type: "POST",
+                    data: JSON.stringify(data1),
+                    success: function (result) {
+                        if (result == "Error") {
+                            alert("Transaction Error")
+                        }
+                        else
+                            window.location = "/Myroute";
+
+                    },
+                });
+
+
+            });
+
+        });
+        $("#deleteall").click(function () {
+            getAjax('/IDB_STUDENTS/DeleteAll/' + $("#STUDENT_ID").val(), function (d) {
+                window.location = '/Myroute/';//refresh
+            });
+        });
+        remove = function (j) {
+            //alert(j)
+            act.splice(j, 1);
+            CORE_STUDENTS();
+        }
+        edit1 = function (a, b, c, d, e, f,g,h) {
+            $("#SL_NO").val(a);
+            $("#NAME").val(d);
+            $("#SUB_ID").val(b);
+            $("#IDB_SUBJECT").val(c);
+            $("#ACTIVE").val(e);
+
+
+            index = h;
+            $("#CORE_DATE").val(f);
+            $("#add").val("Edit");
+        }
+        function ConvertDate(f) {
+            value = new Date(f);
+            var dd = String(value.getDate()).padStart(2, '0');
+            var mm = String(value.getMonth() + 1).padStart(2, '0');
+            var yyyy = value.getFullYear();
+            today = yyyy + "-" + mm + "-" + dd;
+            return today;
+        }
+        function getAjax(url, callback) {
+            $.ajax({
+                dataType: "json",
+                url: url,
+                success: callback
+            });
+        }
+    })
+</script>
+
+
+
+
+
+
+

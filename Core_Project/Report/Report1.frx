@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="01/18/2023 20:05:04" ReportInfo.Modified="01/18/2023 20:26:55" ReportInfo.CreatorVersion="2023.1.8.0">
+  <Styles Name="Blue">
+    <Style Name="Title" Font="Arial, 12pt, style=Bold"/>
+    <Style Name="Header" Fill.Color="LightSkyBlue" Font="Arial, 10pt, style=Bold"/>
+    <Style Name="Group" Font="Arial, 10pt, style=Bold"/>
+    <Style Name="Data" Font="Arial, 10pt"/>
+    <Style Name="Footer" Fill.Color="LightSkyBlue" Font="Arial, 10pt"/>
+    <Style Name="EvenRows" Fill.Color="AliceBlue" Font="Arial, 10pt"/>
+  </Styles>
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqJUrEa/KIcQqhhcfnlqC6PKK8MheP9IEu4gFWCPXnWzFgLjPP39mqhm6WKckRi90qfWFHDc7eZn2VVrd1T5h+hY3goKZOgudWj28oEqDIUG5wz8RVnQ2krOL7b4DKUw2WGFpxOkOcDVOp0A1EokYWqm1xcTr0us8gYZHokLnLxM469t9bpTKBSt/oLwOIVNJUpPzMwpK/A22wGMLXu6pKVA==">
+      <TableDataSource Name="CORE_STUDENTS" DataType="System.Int32" Enabled="true" TableName="CORE_STUDENTS">
+        <Column Name="SL_NO" DataType="System.String"/>
+        <Column Name="STUDENT_ID" DataType="System.String"/>
+        <Column Name="SUB_ID" DataType="System.String"/>
+        <Column Name="NAME" DataType="System.String"/>
+        <Column Name="ACTIVE" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="CORE_DATE" DataType="System.DateTime"/>
+        <Column Name="PICTURE" DataType="System.String"/>
+        <Column Name="IDB_SUBJECT" DataType="System.String"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+  </Dictionary>
+  <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="37.8">
+      <TextObject Name="Text1" Width="718.2" Height="37.8" Dock="Fill" Fill="LinearGradient" Fill.StartColor="Gray" Fill.EndColor="White" Fill.Angle="90" Fill.Focus="0.56" Fill.Contrast="1" Text="CORE_STUDENTS" HorzAlign="Center" VertAlign="Center" Font="Arial Black, 20.25pt, style=Bold"/>
+    </ReportTitleBand>
+    <GroupHeaderBand Name="GroupHeader1" Top="41.8" Width="718.2" Height="37.8" Condition="[CORE_STUDENTS.STUDENT_ID]">
+      <TextObject Name="Text18" Width="718.2" Height="37.8" Dock="Fill" Fill.Color="BurlyWood" Text="[CORE_STUDENTS.STUDENT_ID]" HorzAlign="Center" Font="Arial Black, 16pt, style=Bold"/>
+      <DataBand Name="Data1" Top="83.6" Width="718.2" Height="179.55" DataSource="CORE_STUDENTS">
+        <TextObject Name="Text2" Width="113.4" Height="18.9" Fill.Color="LightSkyBlue" Text="SL_NO" Font="Arial, 10pt, style=Bold" Style="Header"/>
+        <TextObject Name="Text3" Left="113.4" Width="604.8" Height="18.9" Text="[CORE_STUDENTS.SL_NO]" Font="Arial, 10pt" Style="Data"/>
+        <TextObject Name="Text4" Top="18.9" Width="113.4" Height="18.9" Fill.Color="LightSkyBlue" Text="STUDENT_ID" Font="Arial, 10pt, style=Bold" Style="Header"/>
+        <TextObject Name="Text5" Left="113.4" Top="18.9" Width="604.8" Height="18.9" Text="[CORE_STUDENTS.STUDENT_ID]" Font="Arial, 10pt" Style="Data"/>
+        <TextObject Name="Text6" Top="37.8" Width="113.4" Height="18.9" Fill.Color="LightSkyBlue" Text="NAME" Font="Arial, 10pt, style=Bold" Style="Header"/>
+        <TextObject Name="Text7" Left="113.4" Top="37.8" Width="604.8" Height="18.9" Text="[CORE_STUDENTS.NAME]" Font="Arial, 10pt" Style="Data"/>
+        <TextObject Name="Text8" Top="56.7" Width="113.4" Height="18.9" Fill.Color="LightSkyBlue" Text="SUB_ID" Font="Arial, 10pt, style=Bold" Style="Header"/>
+        <TextObject Name="Text9" Left="113.4" Top="56.7" Width="604.8" Height="18.9" Text="[CORE_STUDENTS.SUB_ID]" Font="Arial, 10pt" Style="Data"/>
+        <TextObject Name="Text10" Top="75.6" Width="113.4" Height="18.9" Fill.Color="LightSkyBlue" Text="IDB_SUBJECT" Font="Arial, 10pt, style=Bold" Style="Header"/>
+        <TextObject Name="Text11" Left="113.4" Top="75.6" Width="604.8" Height="18.9" Text="[CORE_STUDENTS.IDB_SUBJECT]" Font="Arial, 10pt" Style="Data"/>
+        <TextObject Name="Text12" Top="94.5" Width="113.4" Height="18.9" Fill.Color="LightSkyBlue" Text="ACTIVE" Font="Arial, 10pt, style=Bold" Style="Header"/>
+        <TextObject Name="Text13" Left="113.4" Top="94.5" Width="604.8" Height="18.9" Text="[CORE_STUDENTS.ACTIVE]" Font="Arial, 10pt" Style="Data"/>
+        <TextObject Name="Text14" Top="113.4" Width="113.4" Height="18.9" Fill.Color="LightSkyBlue" Text="CORE_DATE" Font="Arial, 10pt, style=Bold" Style="Header"/>
+        <TextObject Name="Text15" Left="113.4" Top="113.4" Width="604.8" Height="18.9" Text="[CORE_STUDENTS.CORE_DATE]" Font="Arial, 10pt" Style="Data"/>
+      </DataBand>
+      <GroupFooterBand Name="GroupFooter1" Top="267.15" Width="718.2" Height="18.9"/>
+    </GroupHeaderBand>
+    <PageFooterBand Name="PageFooter1" Top="290.05" Width="718.2" Height="18.9">
+      <TextObject Name="Text19" Width="718.2" Height="18.9" Dock="Fill" Fill.Color="LightSkyBlue" Text="[PageN]" HorzAlign="Right" Font="Arial, 10pt" Style="Footer"/>
+    </PageFooterBand>
+  </ReportPage>
+</Report>
